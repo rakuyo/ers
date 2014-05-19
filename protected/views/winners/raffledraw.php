@@ -7,25 +7,40 @@
 	'htmlOptions'=>array('class'=>'well'),
 )); ?>
 
+<style>
+
+.div_toggle {
+  height: 50px;
+  font-size: 32px;
+  text-align: center;
+}
+
+#eve, #raf, #hidden, .required {
+  display: none;
+}
+
+</style>
+
 <?php $raffle = CHtml::listData(Raffles::model()->findAll(),'id','name');?>
 <?php $event = CHtml::listData(Events::model()->findAll(),'id','name');?>
+
 <!--<p class="help-block">Fields with <span class="required">*</span> are required.</p>-->
-<div class="row"><?php echo $form->dropDownListRow($model,'event_id',$event,array('style'=>'height:50px;font-size:32px;text-align:center','class'=>'span','empty'=>'Choose An Event','id'=>'eid')); ?></div>
-<div id=eve style="display:none"><h1 style="font-size:50px;height:55px">event</h1></div>
-<div style="display:none"><?php echo $form->textFieldRow($model,'event_id',array('style'=>'height:50px;font-size:32px;text-align:center','id'=>'event','class'=>'span')); ?></div>
 
-<div class="row"><?php echo $form->dropDownListRow($model,'raffle_id',$raffle,array('style'=>'height:50px;font-size:32px;text-align:center','class'=>'span','empty'=>'Choose A Raffle','id'=>'rid')); ?></div>
-<div id=raf style="display:none"><h1 style="font-size:50px;height:55px">raffle</h1></div>
-<div style="display:none"><?php echo $form->textFieldRow($model,'raffle_id',array('style'=>'height:50px;font-size:32px;text-align:center','id'=>'raffle','class'=>'span')); ?></div>
+<div class="row ee"><?php echo $form->dropDownListRow($model,'event_id',$event,array('id'=>'eid','class'=>'span div_toggle','empty'=>'Choose An Event')); ?></div>
+<div id=eve class="clearfix"><h1>event</h1></div>
+<div id=hidden><?php echo $form->textFieldRow($model,'event_id',array('id'=>'event','class'=>'span div_toggle')); ?></div>
+<div></div><br><div></div>
+<div class="row rr"><?php echo $form->dropDownListRow($model,'raffle_id',$raffle,array('id'=>'rid','class'=>'span div_toggle','empty'=>'Choose A Raffle')); ?></div>
+<div id=raf class="clearfix"><h1>raffle</h1></div>
+<div id=hidden><?php echo $form->textFieldRow($model,'raffle_id',array('id'=>'raffle','class'=>'span div_toggle')); ?></div>
 
 
-<br><br>
-<div id=draw_result><h1 style="font-size:50px;height:55px">Prize : </h1></div>
-<div style="display:none"><?php echo $form->textFieldRow($model,'participant_id',array('style'=>'height:50px;font-size:32px;text-align:center','id'=>'pid','class'=>'span')); ?></div>
-<div style="display:none"><?php echo $form->textFieldRow($model,'group_id',array('style'=>'height:50px;font-size:32px;text-align:center','id'=>'gid','class'=>'span')); ?></div>
-<br><br>
-
-<?php echo CHtml::link('START DRAW','',array('id'=>'drawBtn','class'=>'btn btn-danger btn-large','style'=>'display:none;font-size:60px;height:20%;padding: 45px 85px;')); ?>
+<br>
+<div id=draw_result class="clearfix" style="line-height:1em height:55px; font-size:70px;">Prize : </h1></div>
+<div id=hidden><?php echo $form->textFieldRow($model,'participant_id',array('id'=>'pid','class'=>'span div_toggle')); ?></div>
+<div id=hidden><?php echo $form->textFieldRow($model,'group_id',array('id'=>'gid','class'=>'span div_toggle')); ?></div>
+<br>
+<?php echo CHtml::link('START DRAW','',array('id'=>'drawBtn','class'=>'btn btn-danger btn-large','style'=>'display:none; font-size:60px; height:20%; padding: 45px 85px;')); ?>
 <script>
 <?php
 
@@ -45,6 +60,7 @@ $raffles = Raffles::model()->findAll();
 $event_names = array();
 $raffle_names = array();
 $prize_names = array();
+
 foreach($raffles as $r){
 array_push($prize_names,$r->prize);
 array_push($event_names, $r->event->name);
@@ -66,29 +82,39 @@ echo "var raffle_array= ".$raffle_array.";\n";
 echo "var prize_array= ".$prize_array.";\n";
 ?>
 
+var div_style = {"font-size":"50px","display":"inline"};
+var div_prize = {"font-size":"70px","display":"inline"};
+var before_draw = {"color": "black"};
+var after_draw = {"color": "red", 'font-weight' : 'bold'};
+
 $('#eid').change(function(){
-  $('#eid').toggle();
-  $('#eve').toggle();
+  $(this).toggle();
+  $('#eve').toggle().css(div_style);
   $('#event').val(this.value);
   var v = this.value - 1;
-  document.getElementById("eve").innerHTML = event_array[v];
+//  document.getElementById("eve").innerHTML = event_array[v];
+  $('#eve').text(event_array[v] + " Event");
   if( $('#raffle').val() > 0) $('#drawBtn').toggle();
 });
 
 $('#rid').change(function(){
-  $('#rid').toggle();
-  $('#raf').toggle();
+  $(this).toggle();
+  $('#raf').toggle().css(div_style);
   $('#raffle').val(this.value);
   var v = this.value - 1;
-  document.getElementById("raf").innerHTML = raffle_array[v];
-  document.getElementById("draw_result").innerHTML = "Prize: " + prize_array[v];
+//  document.getElementById("raf").innerHTML = raffle_array[v];
+  $('#raf').text(raffle_array[v] + " Raffle Draw");
+//  document.getElementById("draw_result").innerHTML = "Prize: " + prize_array[v];
+  $('#draw_result').text("Prize: " + prize_array[v]).css(div_prize);
   if( $('#event').val() > 0) $('#drawBtn').toggle();
 });
 
 $('#drawBtn').click(function () {
     var i = 0;
     var delay = 300;
-    $(this).hide();
+    $(this).text("Draw Again").toggle();
+    $('.btn-success').hide();
+    $('#draw_result').css(before_draw);
     //shuffled participant
     $.each(names_array, function (i, val) {
         var remaining = names_array.length - i;
@@ -97,14 +123,17 @@ $('#drawBtn').click(function () {
         if (remaining < 5) delay = 50;
 
         $("#draw_result").fadeOut(delay, function () {
+	    if (remaining == 1){ $('#drawBtn').toggle(); $('.btn-success').toggle(); $(this).css(after_draw)} 
             $(this).html(val);
         }).fadeIn(delay);
+
     });
+
 
     //result of rand
     $("#draw_result").animate({
-        'font-size': 50
-    }, 100, function () {
+        'font-size': 100, 'line-height': '1em'
+    }, 1, function () {
         var x = Math.floor((Math.random() * (names_array.length)) + 0);
 //        document.getElementById("pid").innerHTML = x;
 	var z = $('#raffle').val() - 1;
@@ -112,7 +141,6 @@ $('#drawBtn').click(function () {
         $(this).append(' Won ').append(prize_array[z]);
     	$('#pid').val(pid_array[x]);
 	$('#gid').val(gid_array[x]);
-	$('.btn-success').toggle();
     });
 });
 </script>
