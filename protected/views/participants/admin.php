@@ -18,4 +18,13 @@ array(
 ),
 ),
 )); ?>
+
+<div class= "clear-fix">
 <?php $this->widget('bootstrap.widgets.TbButton', array('type'=>'primary','buttonType'=>'link','icon'=>'icon-plus-sign','url'=>Yii::app()->createUrl('participants/create'),'label'=>'Add Participant'));?>
+<span class= "pull-right">
+<?php $this->widget('bootstrap.widgets.TbButton', array('type'=>'','buttonType'=>'','icon'=>'icon-check','url'=>Yii::app()->createUrl('participants/includeall'),'label'=>'Include All Participants','htmlOptions'=>array('class'=>'btn-success btn'))); ?>
+<span style="width:100px;"></span>
+<?php $this->widget('bootstrap.widgets.TbButton', array('type'=>'','buttonType'=>'','icon'=>'icon-remove','url'=>Yii::app()->createUrl('participants/excludeall'),'label'=>'Exclude All Participants', 'htmlOptions'=>array('class'=>'btn-warning btn'))); ?>
+</span>
+</div>
+

@@ -35,7 +35,7 @@ array('allow', // allow authenticated user to perform 'create' and 'update' acti
 'users'=>array('@'),
 ),
 array('allow', // allow admin user to perform 'admin' and 'delete' actions
-'actions'=>array('admin','delete'),
+'actions'=>array('admin','delete','includeall','excludeall'),
 'users'=>array('admin'),
 ),
 array('deny',  // deny all users
@@ -44,6 +44,33 @@ array('deny',  // deny all users
 );
 }
 
+public function actionIncludeall()
+{
+Participants::model()->updateAll(array('include'=>1));
+
+$model=new Participants('search');
+$model->unsetAttributes();  // clear any default values
+if(isset($_GET['Participants']))
+$model->attributes=$_GET['Participants'];
+
+$this->render('admin',array(
+'model'=>$model,
+));
+}
+
+public function actionExcludeall()
+{
+Participants::model()->updateAll(array('include'=>0));
+
+$model=new Participants('search');
+$model->unsetAttributes();  // clear any default values
+if(isset($_GET['Participants']))
+$model->attributes=$_GET['Participants'];
+
+$this->render('admin',array(
+'model'=>$model,
+));
+}
 /**
 * Displays a particular model.
 * @param integer $id the ID of the model to be displayed

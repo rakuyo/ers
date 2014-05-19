@@ -19,7 +19,7 @@
 		),
 array(
 'class'=>'bootstrap.widgets.TbButtonColumn',
-'template'=>'',
+'template'=>'{delete}',
 ),
 ),
 )); ?>

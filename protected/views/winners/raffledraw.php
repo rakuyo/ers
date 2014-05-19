@@ -21,16 +21,18 @@
 
 </style>
 
-<?php $raffle = CHtml::listData(Raffles::model()->findAll(),'id','name');?>
-<?php $event = CHtml::listData(Events::model()->findAll(),'id','name');?>
-
+<?php $event = CHtml::listData(Events::model()->findAll(array('order' => 'id')),'id','name');?>
+<?php //$raffle = CHtml::listData(Raffles::model()->findAllByPk(2),'id','name');?>
 <!--<p class="help-block">Fields with <span class="required">*</span> are required.</p>-->
 
-<div class="row ee"><?php echo $form->dropDownListRow($model,'event_id',$event,array('id'=>'eid','class'=>'span div_toggle','empty'=>'Choose An Event')); ?></div>
+<div class="row ee"><?php echo $form->dropDownListRow($model,'event_id',$event,array('id'=>'event_id','class'=>'span div_toggle','empty'=>' --Choose An Event-- ','ajax'=>array('type'=>'POST','url'=>CController::createUrl('findRaffle'),'data'=>array('event_id'=>'js:this.value'),'update'=>'#raffle_id'))); ?></div>
 <div id=eve class="clearfix"><h1>event</h1></div>
 <div id=hidden><?php echo $form->textFieldRow($model,'event_id',array('id'=>'event','class'=>'span div_toggle')); ?></div>
+
 <div></div><br><div></div>
-<div class="row rr"><?php echo $form->dropDownListRow($model,'raffle_id',$raffle,array('id'=>'rid','class'=>'span div_toggle','empty'=>'Choose A Raffle')); ?></div>
+
+<!--<div class="row rr"><?php //echo $form->dropDownListRow($model,'raffle_id',$raffle,array('id'=>'rid','class'=>'span div_toggle','empty'=>'Choose A Raffle','disabled'=>'true')); ?></div>-->
+<div class="row rr"><?php echo CHtml::dropDownList('raffle_id','',array(),array('class'=>'span div_toggle','prompt'=>' --Choose A Raffle-- ')); ?></div>
 <div id=raf class="clearfix"><h1>raffle</h1></div>
 <div id=hidden><?php echo $form->textFieldRow($model,'raffle_id',array('id'=>'raffle','class'=>'span div_toggle')); ?></div>
 
@@ -84,20 +86,21 @@ echo "var prize_array= ".$prize_array.";\n";
 
 var div_style = {"font-size":"50px","display":"inline"};
 var div_prize = {"font-size":"70px","display":"inline"};
-var before_draw = {"color": "black"};
-var after_draw = {"color": "red", 'font-weight' : 'bold'};
+var before_draw = {"color":"black"};
+var after_draw = {"color":"red",'font-weight':'bold'};
 
-$('#eid').change(function(){
+$('#event_id').change(function(){
   $(this).toggle();
   $('#eve').toggle().css(div_style);
   $('#event').val(this.value);
+  $('#rid').prop('disabled', false);
   var v = this.value - 1;
 //  document.getElementById("eve").innerHTML = event_array[v];
   $('#eve').text(event_array[v] + " Event");
-  if( $('#raffle').val() > 0) $('#drawBtn').toggle();
+//  if( $('#raffle').val() > 0) $('#drawBtn').toggle();
 });
 
-$('#rid').change(function(){
+$('#raffle_id').change(function(){
   $(this).toggle();
   $('#raf').toggle().css(div_style);
   $('#raffle').val(this.value);
@@ -106,7 +109,7 @@ $('#rid').change(function(){
   $('#raf').text(raffle_array[v] + " Raffle Draw");
 //  document.getElementById("draw_result").innerHTML = "Prize: " + prize_array[v];
   $('#draw_result').text("Prize: " + prize_array[v]).css(div_prize);
-  if( $('#event').val() > 0) $('#drawBtn').toggle();
+  if( $('#event_id').val() > 0) $('#drawBtn').toggle();
 });
 
 $('#drawBtn').click(function () {

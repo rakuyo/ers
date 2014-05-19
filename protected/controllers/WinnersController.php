@@ -35,7 +35,7 @@ array('allow', // allow authenticated user to perform 'create' and 'update' acti
 'users'=>array('@'),
 ),
 array('allow', // allow admin user to perform 'admin' and 'delete' actions
-'actions'=>array('admin','delete','raffledraw'),
+'actions'=>array('admin','delete','raffledraw','findraffle'),
 'users'=>array('admin'),
 ),
 array('deny',  // deny all users
@@ -55,6 +55,17 @@ public function actionRaffledraw()
       $this->redirect(array('raffledraw'));
     }
     $this->render('raffledraw',array('model'=>$model,));
+}
+
+public function actionFindraffle()
+{
+  $data = Raffles::model()->findAll('event_id=:event_id',
+      array(':event_id'=>$_POST['event_id']));
+  $data=CHtml::listData($data,'id','name');
+
+  echo "<option value=''>--Choose A Raffle--</option>";
+  foreach($data as $value=>$name)
+    echo CHtml::tag('option', array('value'=>$value),CHtml::encode($name),true);
 }
 
 /**
