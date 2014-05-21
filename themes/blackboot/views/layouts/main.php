@@ -81,9 +81,35 @@
 			)); ?>
 		<!-- breadcrumbs -->
 	  <?php endif?>
-	
-	<?php echo $content ?>
-	
+	<div class="container-fluid" id="page">
+
+	<center>
+	<?php
+	 $msgType='';
+
+ 	 if(Yii::app()->user->hasFlash("success"))
+   	   $msgType='success';
+  	 if(Yii::app()->user->hasFlash("error"))
+   	   $msgType='error';
+  	 if(Yii::app()->user->hasFlash("info"))
+   	   $msgType='info';
+  	 if(Yii::app()->user->hasFlash("warning"))
+   	   $msgType='warning';
+
+  	$this->widget('bootstrap.widgets.TbAlert', array(
+    	  'block'=>false, // display a larger alert block?
+    	  'fade'=>false, // use transitions?
+    	  'closeText'=>false, // close link text - if set to false, no close link is displayed
+    	  'alerts'=>array( // configurations per alert type
+            $msgType=>array('block'=>true, 'fade'=>false, 'closeText'=>false), // success, info, warning, error or danger
+          ),
+        ));
+       ?>
+       </center>
+       <?php echo $content; ?>
+
+       </div><!-- page -->
+
 	
 	</div><!--/.fluid-container-->
 	</div>

@@ -16,6 +16,8 @@ array(
 )); ?>
 <div class= "clear-fix">
 <?php $this->widget('bootstrap.widgets.TbButton', array('type'=>'primary','buttonType'=>'link','icon'=>'icon-plus-sign','url'=>Yii::app()->createUrl('groups/create'),'label'=>'Add Group'));?>
+<span style="width:100px;"></span>
+<?php $this->widget('bootstrap.widgets.TbButton', array('type'=>'','buttonType'=>'','icon'=>'icon-file','url'=>Yii::app()->createUrl('groups/import'),'label'=>'Import CSV file','htmlOptions'=>array('class'=>'btn-info btn'))); ?>
 <span class="pull-right">
 <?php $this->widget('bootstrap.widgets.TbButton', array('type'=>'','buttonType'=>'','icon'=>'icon-check','url'=>Yii::app()->createUrl('groups/includeall'),'label'=>'Include All Groups','htmlOptions'=>array('class'=>'btn-success btn'))); ?>
 <span style="width:100px;"></span>

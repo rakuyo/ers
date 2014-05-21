@@ -15,7 +15,7 @@ return array(
 	// autoloading model and component classes
 	'import'=>array(
 		'application.models.*',
-		'application.components.*',
+		'application.components.*',	
 	),
 	'modules'=>array(
 		// uncomment the following to enable the Gii tool
@@ -29,6 +29,14 @@ return array(
 			// If removed, Gii defaults to localhost only. Edit carefully to taste.
 			'ipFilters'=>array('127.0.0.1','::1'),
 		),
+		'import'=>array(
+             		'class'=>'ext.import.ImportModule',
+             		'onAfterImport' => array('ImportEvent', 'onAfterImport'),
+             		'onBeforeShowForm' => array('ImportEvent', 'onBeforeShowForm'),        
+        	),
+		'importcsv'=>array(
+        	'path'=>'upload/importCsv/', // path to folder for saving csv file and file with import params
+    		),
 		
 	),
 

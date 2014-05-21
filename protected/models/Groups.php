@@ -94,6 +94,31 @@ class Groups extends CActiveRecord
 		));
 	}
 
+	public function behaviors() {
+ 	  return array(
+            'import' => array(
+              'class' => 'ext.import.behaviors.ImportBehavior',
+              //name of model
+              'model'=>'Groups',
+              //name of the controller
+              'controller'=>'groups',
+              'fields'=>array(
+                'name'=>array('displayName'=>'Group Name', 'sample'=>'systems'),
+                'description'=>array('displayName'=>'Description', 'sample'=>'dota team'),
+              ),
+              //url that the user is returned to after successful import
+              'returnUrl'=> '/groups/admin',
+              //the "title" field of the model
+              'titleField'=> 'Groups',
+              //do you want the user to see the data in form view
+              'showImportForm'=> false,
+              //only used if "showImportForm" is set to true
+              //the view that must exist in the model's view folder
+              'importView'=>'show_import_stores_ext'
+            ),
+          );
+        }
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

@@ -35,12 +35,20 @@ array('allow', // allow authenticated user to perform 'create' and 'update' acti
 'users'=>array('@'),
 ),
 array('allow', // allow admin user to perform 'admin' and 'delete' actions
-'actions'=>array('admin','delete','includeall','excludeall'),
+'actions'=>array('admin','delete','includeall','excludeall','import','template'),
 'users'=>array('admin'),
 ),
 array('deny',  // deny all users
 'users'=>array('*'),
 ),
+);
+}
+
+public function actions()
+{
+return array(
+  'import'=>array('class'=>'ext.import.components.ImportModels', 'model'=>'Groups'),
+  'template'=>array('class'=>'ext.import.components.ImportTemplate', 'model'=>'Groups')
 );
 }
 

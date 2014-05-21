@@ -93,16 +93,20 @@ $model=new Participants;
 // Uncomment the following line if AJAX validation is needed
 // $this->performAjaxValidation($model);
 
-if(isset($_POST['Participants']))
-{
-$model->attributes=$_POST['Participants'];
-if($model->save())
-$this->redirect(array('admin'));
+if(isset($_POST['Participants'])){
+  $model->attributes=$_POST['Participants'];
+  try{
+    if($model->save()){
+      Yii::app()->user->setFlash('success','Participant has been added.');
+      $this->redirect(array('admin'));
+    }
+  }
+  catch(Exception $e){
+    Yii::app()->user->setFlash('error','Participant already exist!');
+  }
 }
 
-$this->render('create',array(
-'model'=>$model,
-));
+$this->render('create',array('model'=>$model,));
 }
 
 /**
@@ -117,16 +121,20 @@ $model=$this->loadModel($id);
 // Uncomment the following line if AJAX validation is needed
 // $this->performAjaxValidation($model);
 
-if(isset($_POST['Participants']))
-{
-$model->attributes=$_POST['Participants'];
-if($model->save())
-$this->redirect(array('admin'));
+if(isset($_POST['Participants'])){
+  $model->attributes=$_POST['Participants'];
+  try{
+    if($model->save()){
+      Yii::app()->user->setFlash('info','Participant has been updated');
+      $this->redirect(array('admin'));
+    }
+  }
+  catch(Exception $e){
+    Yii::app()->user->setFlash('error','Unable to update participant!');
+  }
 }
 
-$this->render('update',array(
-'model'=>$model,
-));
+$this->render('update',array('model'=>$model,));
 }
 
 /**
