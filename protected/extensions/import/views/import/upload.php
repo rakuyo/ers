@@ -18,7 +18,6 @@ $form = $this->beginWidget(
 
 ?>
 
-<p><a class="u" href="<?php echo $this->createUrl($m->import->returnUrl);?>"><< back</a></p>
 
 <h1>Import <?php echo get_class($m);?></h1>
 
@@ -34,9 +33,12 @@ echo $form->hiddenField($model, 'model', array('value'=>get_class($m)));
 echo $form->hiddenField($model, 'returnUrl', array('value'=>$m->import->returnUrl));
 ?>
 <br><br><br>
-    <div class="buttons">
-        <?php echo CHtml::submitButton('Submit',array('class'=>'btn btn-info','style'=>'margin-left:0px')); ?>
+    <div>
+        <?php echo CHtml::submitButton('Submit',array('class'=>'btn btn-info','style'=>'margin-left:0px;')); ?>
     </div>
-    
+    <div>
+	<a class="btn btn-warning" style="margin-left:1em" href="<?php echo $this->createUrl($m->import->returnUrl);?>">Cancel</a>
+    </div>
+
     <?php
 $this->endWidget();

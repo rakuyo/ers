@@ -81,7 +81,7 @@
 			)); ?>
 		<!-- breadcrumbs -->
 	  <?php endif?>
-	<div class="container-fluid" id="page">
+	<div id="page">
 
 	<center>
 	<?php

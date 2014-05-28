@@ -3,13 +3,22 @@
 	'enableAjaxValidation'=>false,
 )); ?>
 
+<style>
+#s2id_Raffles_event_id{
+  margin-left: 0px; 
+  margin-bottom: 6px;
+}
+</style>
+
 <p class="help-block">Fields with <span class="required">*</span> are required.</p>
 
 <?php $event = CHtml::listData(Events::model()->findAll(),'id','name');?>
 
 <?php echo $form->errorSummary($model); ?>
 
-<div class="row"><?php echo $form->dropDownListRow($model,'event_id',$event,array('class'=>'span3','empty'=>'Choose an event')); ?></div>
+<div class="row"><?php echo $form->select2Row($model,'event_id',array('data'=>$event,'htmlOptions'=>array(
+						'class'=>'span3'),'options'=>array(
+						'placeholder'=>'Choose an event','allowClear'=>true,))); ?> </div>
 
 <div class="row"><?php echo $form->textFieldRow($model,'name',array('class'=>'span3','maxlength'=>255)); ?></div>
 

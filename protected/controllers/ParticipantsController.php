@@ -47,11 +47,11 @@ array('deny',  // deny all users
 public function actionIncludeall()
 {
 Participants::model()->updateAll(array('include'=>1));
-
+Yii::app()->user->setFlash('info','All Participants have been included!');
 $model=new Participants('search');
 $model->unsetAttributes();  // clear any default values
 if(isset($_GET['Participants']))
-$model->attributes=$_GET['Participants'];
+  $model->attributes=$_GET['Participants'];
 
 $this->render('admin',array(
 'model'=>$model,
@@ -61,11 +61,11 @@ $this->render('admin',array(
 public function actionExcludeall()
 {
 Participants::model()->updateAll(array('include'=>0));
-
+Yii::app()->user->setFlash('warning','All Participants have been excluded!');
 $model=new Participants('search');
 $model->unsetAttributes();  // clear any default values
 if(isset($_GET['Participants']))
-$model->attributes=$_GET['Participants'];
+  $model->attributes=$_GET['Participants'];
 
 $this->render('admin',array(
 'model'=>$model,

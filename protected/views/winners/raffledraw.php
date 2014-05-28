@@ -15,26 +15,25 @@
   text-align: center;
 }
 
-#eve, #raf, #hidden, .required {
+#event_div, #raffle_div, #hidden, .required {
   display: none;
 }
 
 </style>
 
 <?php $event = CHtml::listData(Events::model()->findAll(array('order' => 'id')),'id','name');?>
-<?php //$raffle = CHtml::listData(Raffles::model()->findAllByPk(2),'id','name');?>
 <!--<p class="help-block">Fields with <span class="required">*</span> are required.</p>-->
 
 <div class="row ee"><?php echo $form->dropDownListRow($model,'event_id',$event,array('id'=>'event_id','class'=>'span div_toggle','empty'=>' --Choose An Event-- ','ajax'=>array('type'=>'POST','url'=>CController::createUrl('findRaffle'),'data'=>array('event_id'=>'js:this.value'),'update'=>'#raffle_id'))); ?></div>
-<div id=eve class="clearfix"><h1>event</h1></div>
-<div id=hidden><?php echo $form->textFieldRow($model,'event_id',array('id'=>'event','class'=>'span div_toggle')); ?></div>
+<div id=event_div class="clearfix"><h1>event</h1></div>
+<div id=hidden><?php echo $form->textFieldRow($model,'event_id',array('id'=>'event_text','class'=>'span div_toggle')); ?></div>
 
 <div></div><br><div></div>
 
 <!--<div class="row rr"><?php //echo $form->dropDownListRow($model,'raffle_id',$raffle,array('id'=>'rid','class'=>'span div_toggle','empty'=>'Choose A Raffle','disabled'=>'true')); ?></div>-->
 <div class="row rr"><?php echo CHtml::dropDownList('raffle_id','',array(),array('class'=>'span div_toggle','prompt'=>' --Choose A Raffle-- ')); ?></div>
-<div id=raf class="clearfix"><h1>raffle</h1></div>
-<div id=hidden><?php echo $form->textFieldRow($model,'raffle_id',array('id'=>'raffle','class'=>'span div_toggle')); ?></div>
+<div id=raffle_div class="clearfix"><h1>raffle</h1></div>
+<div id=hidden><?php echo $form->textFieldRow($model,'raffle_id',array('id'=>'raffle_text','class'=>'span div_toggle')); ?></div>
 
 
 <br>
@@ -42,46 +41,40 @@
 <div id=hidden><?php echo $form->textFieldRow($model,'participant_id',array('id'=>'pid','class'=>'span div_toggle')); ?></div>
 <div id=hidden><?php echo $form->textFieldRow($model,'group_id',array('id'=>'gid','class'=>'span div_toggle')); ?></div>
 <br>
-<?php echo CHtml::link('START DRAW','',array('id'=>'drawBtn','class'=>'btn btn-danger btn-large','style'=>'display:none; font-size:60px; height:20%; padding: 45px 85px;')); ?>
+<?php echo CHtml::link('START DRAW','',array('id'=>'drawBtn','class'=>'btn btn-danger btn-large','style'=>'display:none; font-size:60px; height:20%; padding: 45px 85px; border-radius:50px;')); ?>
 <script>
 <?php
 
 $participants = Participants::model()->findAllByAttributes(array('include'=>1));
+$participants_name = array();
 $names = array();
-$pid = array();
-$gid = array();
 
 foreach($participants as $p){
 if($p->group->include==0) continue;
 array_push($names, $p->first_name." ".$p->middle_name." ".$p->last_name);
-array_push($pid, $p->id);
-array_push($gid, $p->group->id);
+$participants_name['id'][] = $p->id;
+$participants_name['name'][] = $p->first_name." ".$p->middle_name." ".$p->last_name;
+$participants_name['group'][] = $p->group->id;
 }
 
 $raffles = Raffles::model()->findAll();
-$event_names = array();
-$raffle_names = array();
-$prize_names = array();
+$raffles_winner = array();
 
 foreach($raffles as $r){
-array_push($prize_names,$r->prize);
-array_push($event_names, $r->event->name);
-array_push($raffle_names,$r->name);
+$raffles_winner['rid'][] = $r->id;
+$raffles_winner['eid'][] = $r->event_id;
+$raffles_winner['event'][] = $r->event->name;
+$raffles_winner['raffle'][] = $r->name;
+$raffles_winner['prize'][] = $r->prize;
 }
-
+shuffle($names);
+$participants_name_array = json_encode($participants_name);
+$raffles_winner_array = json_encode($raffles_winner);
 $names_array = json_encode($names);
-$pid_array = json_encode($pid);
-$gid_array = json_encode($gid);
-$event_array = json_encode($event_names);
-$raffle_array = json_encode($raffle_names);
-$prize_array = json_encode($prize_names);
 
+echo "var participants_name_array= ".$participants_name_array.";\n";
+echo "var raffles_winner_array= ".$raffles_winner_array.";\n";
 echo "var names_array= ".$names_array.";\n";
-echo "var pid_array= ".$pid_array.";\n";
-echo "var gid_array= ".$gid_array.";\n";
-echo "var event_array= ".$event_array.";\n";
-echo "var raffle_array= ".$raffle_array.";\n";
-echo "var prize_array= ".$prize_array.";\n";
 ?>
 
 var div_style = {"font-size":"50px","display":"inline"};
@@ -91,25 +84,20 @@ var after_draw = {"color":"red",'font-weight':'bold'};
 
 $('#event_id').change(function(){
   $(this).toggle();
-  $('#eve').toggle().css(div_style);
-  $('#event').val(this.value);
-  $('#rid').prop('disabled', false);
-  var v = this.value - 1;
-//  document.getElementById("eve").innerHTML = event_array[v];
-  $('#eve').text(event_array[v] + " Event");
-//  if( $('#raffle').val() > 0) $('#drawBtn').toggle();
+  $('#event_div').toggle().css(div_style);
+  $('#event_text').val(this.value);
+  var e_index = raffles_winner_array['eid'].indexOf(this.value);
+  $('#event_div').text(raffles_winner_array['event'][e_index] + " Event");
 });
 
 $('#raffle_id').change(function(){
   $(this).toggle();
-  $('#raf').toggle().css(div_style);
-  $('#raffle').val(this.value);
-  var v = this.value - 1;
-//  document.getElementById("raf").innerHTML = raffle_array[v];
-  $('#raf').text(raffle_array[v] + " Raffle Draw");
-//  document.getElementById("draw_result").innerHTML = "Prize: " + prize_array[v];
-  $('#draw_result').text("Prize: " + prize_array[v]).css(div_prize);
-  if( $('#event_id').val() > 0) $('#drawBtn').toggle();
+  $('#raffle_div').toggle().css(div_style);
+  $('#raffle_text').val(this.value);
+  var r_index = raffles_winner_array['rid'].indexOf(this.value);
+  $('#raffle_div').text(raffles_winner_array['raffle'][r_index] + " Raffle Draw");
+  $('#draw_result').text("Prize: " + raffles_winner_array['prize'][r_index]).css(div_prize);
+  $('#drawBtn').toggle();
 });
 
 $('#drawBtn').click(function () {
@@ -120,7 +108,7 @@ $('#drawBtn').click(function () {
     $('#draw_result').css(before_draw);
     //shuffled participant
     $.each(names_array, function (i, val) {
-        var remaining = names_array.length - i;
+        var remaining = participants_name_array['name'].length - i;
 
         if (remaining < 15 && remaining > 5) delay = 100;
         if (remaining < 5) delay = 50;
@@ -137,13 +125,12 @@ $('#drawBtn').click(function () {
     $("#draw_result").animate({
         'font-size': 100, 'line-height': '1em'
     }, 1, function () {
-        var x = Math.floor((Math.random() * (names_array.length)) + 0);
-//        document.getElementById("pid").innerHTML = x;
-	var z = $('#raffle').val() - 1;
-        $(this).html(names_array[x]);
-        $(this).append(' Won ').append(prize_array[z]);
-    	$('#pid').val(pid_array[x]);
-	$('#gid').val(gid_array[x]);
+        var x = Math.floor((Math.random() * (participants_name_array['name'].length)) + 0);
+	var z = raffles_winner_array['rid'].indexOf($('#raffle_text').val());
+        $(this).html(participants_name_array['name'][x]);
+        $(this).append(' Won ').append(raffles_winner_array['prize'][z]);
+    	$('#pid').val(participants_name_array['id'][x]);
+	$('#gid').val(participants_name_array['group'][x]);
     });
 });
 </script>
