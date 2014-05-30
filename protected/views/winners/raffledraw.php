@@ -15,7 +15,7 @@
   text-align: center;
 }
 
-#event_div, #raffle_div, #hidden, .required {
+#random_value, #event_div, #raffle_div, #hidden, .required {
   display: none;
 }
 
@@ -42,6 +42,7 @@
 <div id=hidden><?php echo $form->textFieldRow($model,'group_id',array('id'=>'gid','class'=>'span div_toggle')); ?></div>
 <br>
 <?php echo CHtml::link('START DRAW','',array('id'=>'drawBtn','class'=>'btn btn-danger btn-large','style'=>'display:none; font-size:60px; height:20%; padding: 45px 85px; border-radius:50px;')); ?>
+<input id=random_value value='Random.Org'>
 <script>
 <?php
 
@@ -81,6 +82,19 @@ var div_style = {"font-size":"50px","display":"inline"};
 var div_prize = {"font-size":"70px","display":"inline"};
 var before_draw = {"color":"black"};
 var after_draw = {"color":"red",'font-weight':'bold'};
+
+$( document ).ready(function() {
+  var rem = participants_name_array['name'].length - 1;
+  var url = 'http://www.random.org/integers/?num=1&min=0&max=' + rem + '&col=1&base=10&format=plain&rnd=new';
+
+  $.get(url, function(data) {
+                $('#random_value').val(data);
+                })
+                .fail(function() {
+                        var x = Math.floor((Math.random() * (participants_name_array['name'].length)) + 0);
+			$('#random_value').val(x);
+                });
+});
 
 $('#event_id').change(function(){
   $(this).toggle();
@@ -125,13 +139,25 @@ $('#drawBtn').click(function () {
     $("#draw_result").animate({
         'font-size': 100, 'line-height': '1em'
     }, 1, function () {
-        var x = Math.floor((Math.random() * (participants_name_array['name'].length)) + 0);
+	var rem = participants_name_array['name'].length - 1;     
+	var url = 'http://www.random.org/integers/?num=1&min=0&max=' + rem + '&col=1&base=10&format=plain&rnd=new';
+
+	$.get(url, function(data) {
+		$('#random_value').val(data);		
+		})
+		.fail(function() {
+			var x = Math.floor((Math.random() * (participants_name_array['name'].length)) + 0);
+                	$('#random_value').val(x);	
+	});
+	var y = $('#random_value').val();	
 	var z = raffles_winner_array['rid'].indexOf($('#raffle_text').val());
-        $(this).html(participants_name_array['name'][x]);
+        $(this).html(participants_name_array['name'][y]);
         $(this).append(' Won ').append(raffles_winner_array['prize'][z]);
-    	$('#pid').val(participants_name_array['id'][x]);
-	$('#gid').val(participants_name_array['group'][x]);
+    	$('#pid').val(participants_name_array['id'][y]);
+	$('#gid').val(participants_name_array['group'][y]);
     });
+
+   
 });
 </script>
 <?php /*$participant = Participants::model()->findAllByAttributes(array('include'=>1));
