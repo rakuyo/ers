@@ -68,7 +68,7 @@ $raffles_winner['event'][] = $r->event->name;
 $raffles_winner['raffle'][] = $r->name;
 $raffles_winner['prize'][] = $r->prize;
 }
-shuffle($names);
+//shuffle($names);
 $participants_name_array = json_encode($participants_name);
 $raffles_winner_array = json_encode($raffles_winner);
 $names_array = json_encode($names);
@@ -120,7 +120,11 @@ $('#drawBtn').click(function () {
     $(this).text("Draw Again").toggle();
     $('.btn-success').hide();
     $('#draw_result').css(before_draw);
-    //shuffled participant
+    
+    // Shuffle the participants
+    Shuffle(names_array);
+
+    //shuffled participants
     $.each(names_array, function (i, val) {
         var remaining = participants_name_array['name'].length - i;
 
@@ -159,6 +163,12 @@ $('#drawBtn').click(function () {
 
    
 });
+
+function Shuffle(names) {
+	for (var j, x, i = names.length; i; j = parseInt(Math.random() * i), x = names[--i], names[i] = names[j], names[j] = x);
+	return names;
+}
+
 </script>
 <?php /*$participant = Participants::model()->findAllByAttributes(array('include'=>1));
 $names=array();
