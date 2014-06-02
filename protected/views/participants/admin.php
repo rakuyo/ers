@@ -3,16 +3,13 @@
   .select2-container{
     width: 235px;
   }
-  #birthdate{
-    color: #fff;
-  }
 </style>
 <?php $this->widget('bootstrap.widgets.TbGridView',array(
   'id'=>'participants-grid',
   'dataProvider'=>$model->search(),
   'afterAjaxUpdate'=>"function() {
     jQuery('#group_id').select2({'placeholder':' ','allowClear':true});
-    jQuery('#birthdate').datepicker({'format':'yyyy-mm-dd','autoclose':true}).css('color','#555');
+    jQuery('#birthdate').datepicker({'format':'yyyy-mm-dd','autoclose':true});
   }",
   'filter'=>$model,
   'columns'=>array(
@@ -26,7 +23,7 @@
      array('name'=>'birthdate','filter'=>$this->widget('bootstrap.widgets.TbDatePicker',array(
        'model'=>$model,'attribute'=>'birthdate','options'=>array(
          'format'=>'yyyy-mm-dd','autoclose'=>true),'htmlOptions'=>array(
-           'id'=>'birthdate','class'=>'input-append date')),true),'sortable'=>true,),
+           'id'=>'birthdate','class'=>'input-append date','placeholder'=>' ',)),true),'sortable'=>true,),
      'contact_number',
      array('name'=>'include','filter'=>array('1'=>'Yes','0'=>'No'),'value'=>'$data->include == 1 ? "Yes" : "No"'),
      array('class'=>'bootstrap.widgets.TbButtonColumn','template'=>'{update}',),

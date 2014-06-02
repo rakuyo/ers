@@ -58,6 +58,19 @@ $participants_name['name'][] = $p->first_name." ".$p->middle_name." ".$p->last_n
 $participants_name['group'][] = $p->group->id;
 }
 
+shuffle($names);
+$shuffle_names = array();
+$l = count($names) - 1;
+
+for($s=0; $s<20; $s++){
+if($l >= $s)
+array_push($shuffle_names, $names[$s]);
+else
+array_push($shuffle_names, $names[rand(0, $l)]);
+}
+
+$names = $shuffle_names;
+
 $raffles = Raffles::model()->findAll();
 $raffles_winner = array();
 
@@ -68,7 +81,6 @@ $raffles_winner['event'][] = $r->event->name;
 $raffles_winner['raffle'][] = $r->name;
 $raffles_winner['prize'][] = $r->prize;
 }
-//shuffle($names);
 $participants_name_array = json_encode($participants_name);
 $raffles_winner_array = json_encode($raffles_winner);
 $names_array = json_encode($names);
@@ -80,7 +92,7 @@ echo "var names_array= ".$names_array.";\n";
 
 var div_style = {"font-size":"50px","display":"inline"};
 var div_prize = {"font-size":"70px","display":"inline"};
-var before_draw = {"color":"black"};
+var before_draw = {"font-size":"50px","color":"black",'font-weight':'bold'};
 var after_draw = {"color":"red",'font-weight':'bold'};
 
 $( document ).ready(function() {
@@ -126,7 +138,7 @@ $('#drawBtn').click(function () {
 
     //shuffled participants
     $.each(names_array, function (i, val) {
-        var remaining = participants_name_array['name'].length - i;
+        var remaining = 20 - i;
 
         if (remaining < 15 && remaining > 5) delay = 100;
         if (remaining < 5) delay = 50;
@@ -141,7 +153,7 @@ $('#drawBtn').click(function () {
 
     //result of rand
     $("#draw_result").animate({
-        'font-size': 100, 'line-height': '1em'
+        'font-size': '100px', 'line-height': '1em'
     }, 1, function () {
 	var rem = participants_name_array['name'].length - 1;     
 	var url = 'http://www.random.org/integers/?num=1&min=0&max=' + rem + '&col=1&base=10&format=plain&rnd=new';
